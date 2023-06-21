@@ -290,15 +290,6 @@ public class SwiftEval: NSObject {
                         """)
         }
 
-        if false == (try? String(contentsOf: projectFile
-            .appendingPathComponent("project.pbxproj")))?.contains("-interposable") {
-            print(APP_PREFIX+"""
-                ⚠️ Project file does not contain the -interposable linker flag. \
-                If you want to be able to inject methods of structs and final classes, \
-                please add \"Other Linker Flags\" -Xlinker -interposable.
-                """)
-        }
-
         return (projectFile, logsDir)
     }
 
@@ -787,7 +778,7 @@ public class SwiftEval: NSObject {
     }
 
     static let quickFiles = getenv("INJECTION_QUICK_FILES").flatMap {
-        String(cString: $0) } ?? "Debug-*/{Quick*,Nimble,Cwl*}.o"
+        String(cString: $0) } ?? "Debug-*/Nimble.framework/Nimble"
     static let quickDylib = "_spec.dylib"
     static let dylibDelim = "==="
     static let parsePlatform = try! NSRegularExpression(pattern:

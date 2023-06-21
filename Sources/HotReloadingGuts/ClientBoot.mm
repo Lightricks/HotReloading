@@ -36,6 +36,13 @@ static SimpleSocket *injectionClient;
 NSString *injectionHost = @"127.0.0.1";
 
 + (void)tryConnect:(Class)clientClass {
+#if TARGET_IPHONE_SIMULATOR
+    if (Class standalone = objc_getClass("StandaloneInjection")) {
+        [[standalone new] run];
+        return;
+    }
+#endif
+
     NSString *socketAddr = @INJECTION_ADDRESS;
     __unused const char *buildPhase = APP_PREFIX"You'll need to be running a recent copy of the InjectionIII.app downloaded from https://github.com/johnno1962/InjectionIII/releases?\n"
     APP_PREFIX"And have typed: defaults write com.johnholdsworth.InjectionIII deviceUnlock any\n";
