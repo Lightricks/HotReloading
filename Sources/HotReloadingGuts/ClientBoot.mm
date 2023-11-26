@@ -58,7 +58,7 @@ static dispatch_once_t onlyOneClient;
         "https://github.com/johnno1962/InjectionIII/releases\n"
     APP_PREFIX"And have typed: defaults write com.johnholdsworth.InjectionIII deviceUnlock any\n";
     BOOL isVapor = dlsym(RTLD_DEFAULT, VAPOR_SYMBOL) != nullptr;
-#if !defined(INJECTION_III_APP)
+#if !defined(INJECTION_III_APP) || 1
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_OSX
     BOOL isiOSAppOnMac = false;
     if (@available(iOS 14.0, *)) {
@@ -83,7 +83,7 @@ static dispatch_once_t onlyOneClient;
     injectionHost = [clientClass
         getMulticastService:HOTRELOADING_MULTICAST port:HOTRELOADING_PORT
                     message:APP_PREFIX"Connecting to %s (%s)...\n"];
-    socketAddr = [injectionHost stringByAppendingString:socketAddr];
+    socketAddr = [injectionHost stringByAppendingString:@HOTRELOADING_PORT];
     if (injectionClient)
         return;
 #endif

@@ -42,6 +42,8 @@ typedef union {
 
 @implementation SimpleSocket
 
+static BOOL isConnected;
+
 + (int)error:(NSString *)message {
     NSLog([@"%@/" stringByAppendingString:message],
           self, strerror(errno));
@@ -98,6 +100,7 @@ typedef union {
                         if (v4Addr->sin_addr.s_addr == addr)
                             client.isLocalClient = TRUE;
                     }];
+                    isConnected = TRUE;
                     [client run];
                 }
             }
@@ -274,6 +277,7 @@ typedef ssize_t (*io_func)(int, void *, size_t);
 }
 
 - (void)dealloc {
+    isConnected = FALSE;
     close(clientSocket);
 }
 
@@ -356,7 +360,7 @@ struct multicast_socket_packet {
               [self multicastHash], msgbuf.hash);
 
         gethostname(msgbuf.host, sizeof msgbuf.host);
-        if ([self multicastHash] == msgbuf.hash &&
+        if (!isConnected &&//[self multicastHash] == msgbuf.hash &&
             sendto(multicastSocket, &msgbuf, sizeof msgbuf, 0,
                    (struct sockaddr *)&addr, addrlen) < sizeof msgbuf) {
             [self error:@"Could not send to multicast: %s"];
